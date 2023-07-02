@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
+using CrudAPI.Model;
 
 namespace CrudAPI.Controllers
 {
@@ -37,20 +38,21 @@ namespace CrudAPI.Controllers
                     return JsonConvert.SerializeObject(dataTable, Formatting.Indented); ;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return("Erros",ex.Message);
+                return ("Erros", ex.Message);
             }
         }
-        
+
         [HttpGet]
         [Route("/api/ListaAsignaura")]
-        public dynamic ListaAsignaura()
+        public dynamic ListaAsignaura(string ?strQuery = null)
         {
             try
             {
+                string strdata = "";
                 string connectionString = configuration.GetConnectionString("colegioDataBase");
-                string query = "SELECT * FROM asignaturas";
+                string query = strQuery == null ? "SELECT * FROM asignaturas" : strQuery;
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     SqlCommand cmd = new SqlCommand(query, connection);
@@ -59,8 +61,11 @@ namespace CrudAPI.Controllers
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
                     connection.Close();
-
-                    return JsonConvert.SerializeObject(dataTable, Formatting.Indented); ;
+                    if(strQuery != null && dataTable != null)
+                    { 
+                        return dataTable.Rows[0].ItemArray[0].ToString();
+                    }
+                    return JsonConvert.SerializeObject(dataTable, Formatting.Indented);
                 }
             }
             catch (Exception ex)
@@ -76,7 +81,7 @@ namespace CrudAPI.Controllers
             try
             {
                 string connectionString = configuration.GetConnectionString("colegioDataBase");
-                string query = "SELECT * FROM profesores";
+                string query = "SELECT * FROM View_Profesores";
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     SqlCommand cmd = new SqlCommand(query, connection);
@@ -96,15 +101,29 @@ namespace CrudAPI.Controllers
         }
 
         [HttpGet]
-        [Route("/api/ListaFinal")]
-        public dynamic ListaFinal()
+        [Route("/api/ListaClases")]
+        public dynamic ListaClases()
         {
             try
             {
+                string connectionString = configuration.GetConnectionString("colegioDataBase");
+                string query = "SELECT * FROM View_Clases";
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand cmd = new SqlCommand(query, connection);
+                    connection.Open();
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+                    connection.Close();
 
-            }catch(Exception ex)
+                    return JsonConvert.SerializeObject(dataTable, Formatting.Indented); ;
+                }
+
+                return ";";
+            }catch (Exception ex)
             {
-                return ex.Message;
+                return BadRequest();
             }
         }
     }

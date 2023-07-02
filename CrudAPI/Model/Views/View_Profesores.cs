@@ -1,14 +1,12 @@
-﻿namespace CrudAPI.Model
+﻿namespace CrudAPI.Model.Views
 {
-    public class Profesores
+    public class View_Profesores
     {
         public string Identificacion { get; set; }
         public string Nombre { get; set; }
-        public string Apellido { get; set; }
         public int Edad { get; set; }
         public string Direccion { get; set; }
         public string Telefono { get; set; }
-        public int Cod_Asignatura { get; set; }
-
+        public string Asignatura { get; set; }
     }
 }
