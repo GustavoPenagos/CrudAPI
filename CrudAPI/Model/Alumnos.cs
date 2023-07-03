@@ -10,5 +10,6 @@
         public string? Telefono { get; set; }
         public string? Asignatura {get;set;}
         public string? Calificacion { get; set; }
+        8
     }
 }
