@@ -27,13 +27,18 @@ namespace CrudAPI.Controllers
                 List<Profesor> listProfesor = new List<Profesor>();
                 List<Asignatura> listAsignatura = new List<Asignatura>();
                 string query = ""; 
-                if (asg == null)
+                switch (name)
                 {
-                    query = "select * from " + name + " where Id  = '" + Id + "'";
-                }
-                else
-                {
-                    query = "select * from " + name + " where Id  = '" + Id + "' and Asignatura = '" + asg + "'";
+                    case "Asignatura":
+                        query = "select * from " + name + " where Id  = '" + Id + "'";
+                        break;
+
+                    case "Alumno":
+                        query = "select * from " + name + " where Id  = '" + Id + "' and Asignatura = '" + asg + "'";
+                        break;
+                    case "Profesor":
+                        query = "select * from " + name + " where Id  = '" + Id + "'";
+                        break;
                 }
 
                 using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("colegioDataBase")))
