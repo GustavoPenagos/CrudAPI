@@ -35,7 +35,7 @@ namespace CrudAPI.Controllers
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
 
-                            cmd.Parameters.AddWithValue("@Id_Alumno", alumno.Id_Alumno);
+                            cmd.Parameters.AddWithValue("@Id_Alumno", alumno.Id);
                             cmd.Parameters.AddWithValue("@Nombre", alumno.Nombre);
                             cmd.Parameters.AddWithValue("@Apellido", alumno.Apellido == null ? "" : alumno.Apellido);
                             cmd.Parameters.AddWithValue("@Edad", alumno.Edad);
@@ -83,7 +83,7 @@ namespace CrudAPI.Controllers
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
 
-                            cmd.Parameters.AddWithValue("@Id_Profesor", profesor.Id_Profesor);
+                            cmd.Parameters.AddWithValue("@Id_Profesor", profesor.Id);
                             cmd.Parameters.AddWithValue("@Nombre", profesor.Nombre);
                             cmd.Parameters.AddWithValue("@Apellido", profesor.Apellido);
                             cmd.Parameters.AddWithValue("@Edad", profesor.Edad);
@@ -129,7 +129,7 @@ namespace CrudAPI.Controllers
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
 
-                            cmd.Parameters.AddWithValue("@Codigo", asignatura.Codigo);
+                            cmd.Parameters.AddWithValue("@Codigo", asignatura.Id);
                             cmd.Parameters.AddWithValue("@Nombre", asignatura.Nombre);
 
                             tran.Commit();

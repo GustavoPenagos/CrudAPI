@@ -32,7 +32,7 @@ namespace CrudAPI.Controllers
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
 
-                            cmd.Parameters.AddWithValue("@Id_Alumno", alumno.Id_Alumno);
+                            cmd.Parameters.AddWithValue("@Id_Alumno", alumno.Id);
                             cmd.Parameters.AddWithValue("@Nombre", alumno.Nombre);
                             cmd.Parameters.AddWithValue("@Apellido", alumno.Apellido);
                             cmd.Parameters.AddWithValue("@Edad", alumno.Edad);
