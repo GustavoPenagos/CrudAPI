@@ -5,10 +5,10 @@ namespace CrudAPI.Data
 {
     public class CrudDbContext: DbContext
     {
-        public CrudDbContext(DbContextOptions<CrudDbContext>options):base(options)
+        public CrudDbContext(DbContextOptions<CrudDbContext>options) : base(options)
         {
         }
-        public DbSet<Alumnos> Alumnos { get; set; }
+        public virtual DbSet<Alumno> Alumno { get; set; }
         public DbSet<Asignatura> Asignatura { get; set;}
         public DbSet<Profesor> Profesor { get; set;}
     }

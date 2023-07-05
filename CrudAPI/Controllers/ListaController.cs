@@ -8,100 +8,43 @@ using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using CrudAPI.Model;
 using Microsoft.Extensions.Configuration;
+using CrudAPI.Data;
 
 namespace CrudAPI.Controllers
 {
     [ApiController]
     public class ListaController : ControllerBase
     {
-        public IConfiguration Configuration { get; }
-        public ListaController(IConfiguration configuration)
+        private readonly CrudDbContext? _dbContext;
+
+        public ListaController(CrudDbContext dbContext)
         {
-            Configuration = configuration;
+            _dbContext = dbContext;
         }
 
         [HttpGet]
-        [Route("/api/lista/alumnos")]
-        public dynamic ListaAlumnos()
+        [Route("api/listar")]
+        public dynamic Listar(string name)
         {
             try
             {
-                string connectionString = Configuration.GetConnectionString("colegioDataBase");
-                string query = "SELECT * FROM alumno";
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                switch (name)
                 {
-                    SqlCommand cmd = new SqlCommand(query, connection);
-                    connection.Open();
-                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
-                    connection.Close();
-
-                    return JsonConvert.SerializeObject(dataTable, Formatting.Indented);
+                    case "alumno":
+                        return JsonConvert.SerializeObject(_dbContext.Alumno.ToList(), Formatting.Indented);
+                    case "profesor":
+                        return JsonConvert.SerializeObject(_dbContext.Profesor.ToList(), Formatting.Indented);
+                    case "asignatura":
+                        return JsonConvert.SerializeObject(_dbContext.Asignatura.ToList(), Formatting.Indented);
+                    default: return BadRequest();
                 }
+               
+               
             }
             catch (Exception ex)
             {
                 return ("Erros", ex.Message);
             }
         }
-
-        [HttpGet]
-        [Route("api/lista/profesores")]
-        public dynamic ListaProfesores()
-        {
-            try
-            {
-                string connectionString = Configuration.GetConnectionString("colegioDataBase");
-                string query = "SELECT * FROM Profesor";
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlCommand cmd = new SqlCommand(query, connection);
-                    connection.Open();
-                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
-                    connection.Close();
-
-                    return JsonConvert.SerializeObject(dataTable, Formatting.Indented); ;
-                }
-            }
-            catch (Exception ex)
-            {
-                return ("Erros", ex.Message);
-            }
-        }
-
-        [HttpGet]
-        [Route("api/lista/asignaturas")]
-        public dynamic ListaAsignaura(string ?strQuery = null)
-        {
-            try
-            {
-                string connectionString = Configuration.GetConnectionString("colegioDataBase");
-                string query = strQuery == null ? "SELECT * FROM Asignatura" : strQuery;
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlCommand cmd = new SqlCommand(query, connection);
-                    connection.Open();
-                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
-                    connection.Close();
-                    if(strQuery != null && dataTable != null)
-                    { 
-                        return dataTable.Rows[0].ItemArray[0].ToString();
-                    }
-                    return JsonConvert.SerializeObject(dataTable, Formatting.Indented);
-                }
-            }
-            catch (Exception ex)
-            {
-                return ("Erros", ex.Message);
-            }
-        }
-
-        
-
     }
 }

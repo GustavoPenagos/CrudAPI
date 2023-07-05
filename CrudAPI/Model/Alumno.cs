@@ -1,6 +1,6 @@
 ﻿namespace CrudAPI.Model
 {
-    public class Alumnos
+    public class Alumno
     {
         public string? Id { get; set; }
         public string? Nombre { get; set; }

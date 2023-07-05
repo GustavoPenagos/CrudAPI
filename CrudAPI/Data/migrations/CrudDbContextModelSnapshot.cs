@@ -21,7 +21,7 @@ namespace CrudAPI.data.migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CrudAPI.Model.Alumnos", b =>
+            modelBuilder.Entity("CrudAPI.Model.Alumno", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -49,7 +49,7 @@ namespace CrudAPI.data.migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Alumnos");
+                    b.ToTable("Alumno");
                 });
 
             modelBuilder.Entity("CrudAPI.Model.Asignatura", b =>

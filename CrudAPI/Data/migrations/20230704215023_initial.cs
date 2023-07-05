@@ -11,7 +11,7 @@ namespace CrudAPI.data.migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Alumnos",
+                name: "Alumno",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -25,7 +25,7 @@ namespace CrudAPI.data.migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Alumnos", x => x.Id);
+                    table.PrimaryKey("PK_Alumno", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,7 +62,7 @@ namespace CrudAPI.data.migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Alumnos");
+                name: "Alumno");
 
             migrationBuilder.DropTable(
                 name: "Asignatura");

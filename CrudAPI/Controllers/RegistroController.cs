@@ -7,57 +7,42 @@ using Newtonsoft.Json;
 using CrudAPI.Model;
 using System.Security.Cryptography.Xml;
 using Microsoft.Win32;
+using CrudAPI.Data;
 
 namespace CrudAPI.Controllers
 {
     [ApiController]
     public class RegistroController : ControllerBase
     {
-        public IConfiguration Configuration { get; }
-        public RegistroController(IConfiguration configuration)
+        private readonly CrudDbContext? _dbContext;
+
+        public RegistroController(CrudDbContext dbContext)
         {
-            Configuration = configuration;
+            _dbContext = dbContext;
         }
 
         [HttpPost]
-        [Route("/api/registro/alumnos")]
-        public  dynamic RigistroAlumno(Alumnos alumno)
+        [Route("/api/registro")]
+        public  dynamic RigistroAlumno(Alumno alumno)
         {
             try
             {
-                using (SqlConnection con = new SqlConnection(Configuration.GetConnectionString("colegioDataBase")))
+                var insert = new Alumno
                 {
-                    con.Open();
-                    SqlTransaction tran = con.BeginTransaction();
-                    using(SqlCommand cmd = new SqlCommand("SP_Insertar_Alumno", con, tran))
-                    {
-                        try
-                        {
-                            cmd.CommandType = CommandType.StoredProcedure;
+                    Id = alumno.Id,
+                    Nombre = alumno.Nombre,
+                    Apellido = alumno.Apellido,
+                    Edad = alumno.Edad,
+                    Direccion = alumno.Direccion,
+                    Telefono = alumno.Telefono,
+                    Asignatura = alumno.Asignatura,
+                    Calificacion = alumno.Calificacion
+                };
 
-                            cmd.Parameters.AddWithValue("@Id_Alumno", alumno.Id);
-                            cmd.Parameters.AddWithValue("@Nombre", alumno.Nombre);
-                            cmd.Parameters.AddWithValue("@Apellido", alumno.Apellido == null ? "" : alumno.Apellido);
-                            cmd.Parameters.AddWithValue("@Edad", alumno.Edad);
-                            cmd.Parameters.AddWithValue("@Direccion", alumno.Direccion);
-                            cmd.Parameters.AddWithValue("@Telefono", alumno.Telefono == null ? "" : alumno.Telefono);
-                            cmd.Parameters.AddWithValue("@Asignatura", alumno.Asignatura == null ? "" : alumno.Asignatura);
-                            cmd.Parameters.AddWithValue("@Calificacion", alumno.Calificacion == null ? "" : alumno.Calificacion);
+                _dbContext.Alumno.Add(insert);
 
-                            tran.Commit();
-                            cmd.ExecuteNonQuery();
-                        }
-                        catch(Exception ex)
-                        {
-                            tran.Rollback();
-                        }
-                        finally
-                        {
-                            tran?.Dispose();
-                        }
-                    }
+                _dbContext.SaveChanges();
 
-                }
                 return Ok();
             }
             catch (Exception ex)
@@ -73,38 +58,21 @@ namespace CrudAPI.Controllers
         {
             try
             {
-                using (SqlConnection con = new SqlConnection(Configuration.GetConnectionString("colegioDataBase")))
+                var insert = new Profesor
                 {
-                    con.Open();
-                    SqlTransaction tran = con.BeginTransaction();
-                    using (SqlCommand cmd = new SqlCommand("SP_Insertar_Profesor", con, tran))
-                    {
-                        try
-                        {
-                            cmd.CommandType = CommandType.StoredProcedure;
+                    Id = profesor.Id,
+                    Nombre = profesor.Nombre,
+                    Apellido = profesor.Apellido,
+                    Edad = profesor.Edad,
+                    Direccion = profesor.Direccion,
+                    Telefono = profesor.Telefono,
+                    Asignatura = profesor.Asignatura,
+                };
 
-                            cmd.Parameters.AddWithValue("@Id_Profesor", profesor.Id);
-                            cmd.Parameters.AddWithValue("@Nombre", profesor.Nombre);
-                            cmd.Parameters.AddWithValue("@Apellido", profesor.Apellido);
-                            cmd.Parameters.AddWithValue("@Edad", profesor.Edad);
-                            cmd.Parameters.AddWithValue("@Direccion", profesor.Direccion);
-                            cmd.Parameters.AddWithValue("@Telefono", profesor.Telefono);
-                            cmd.Parameters.AddWithValue("@Asignatura", profesor.Asignatura);
+                _dbContext.Profesor.Add(insert);
 
-                            tran.Commit();
-                            cmd.ExecuteNonQuery();
-                        }
-                        catch (Exception ex)
-                        {
-                            tran.Rollback();
-                        }
-                        finally
-                        {
-                            tran?.Dispose();
-                        }
-                    }
+                _dbContext.SaveChanges();
 
-                }
                 return Ok();
             }
             catch (Exception ex)
@@ -119,33 +87,17 @@ namespace CrudAPI.Controllers
         {
             try
             {
-                using (SqlConnection con = new SqlConnection(Configuration.GetConnectionString("colegioDataBase")))
+                var insert = new Asignatura
                 {
-                    con.Open();
-                    SqlTransaction tran = con.BeginTransaction();
-                    using (SqlCommand cmd = new SqlCommand("SP_Insertar_Asignatura", con, tran))
-                    {
-                        try
-                        {
-                            cmd.CommandType = CommandType.StoredProcedure;
+                    Id = asignatura.Id,
+                    Nombre = asignatura.Nombre,
+                    
+                };
 
-                            cmd.Parameters.AddWithValue("@Codigo", asignatura.Id);
-                            cmd.Parameters.AddWithValue("@Nombre", asignatura.Nombre);
+                _dbContext.Asignatura.Add(insert);
 
-                            tran.Commit();
-                            cmd.ExecuteNonQuery();
-                        }
-                        catch (Exception ex)
-                        {
-                            tran.Rollback();
-                        }
-                        finally
-                        {
-                            tran?.Dispose();
-                        }
-                    }
+                _dbContext.SaveChanges();
 
-                }
                 return Ok();
             }
             catch (Exception ex)
@@ -153,7 +105,6 @@ namespace CrudAPI.Controllers
                 return BadRequest();
             }
         }
-
 
     }
 }
