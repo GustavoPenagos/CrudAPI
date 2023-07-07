@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 
 namespace CrudAPI.Controllers
@@ -50,6 +51,6 @@ namespace CrudAPI.Controllers
             {
                 return BadRequest(ex);
             }
-        }
+        }        
     }
 }

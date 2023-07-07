@@ -2,6 +2,7 @@
 using CrudAPI.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Data;
 using System.Data.SqlClient;
 using System.Net.Http.Headers;
@@ -102,32 +103,65 @@ namespace CrudAPI.Controllers
         [Route("api/eliminar")]
         public dynamic Eliminar(string id, string? asg=null, string? name=null)
         {
+            var configBuilder = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .Build();
+
+            var connectionString = configBuilder.GetConnectionString("colegioDataBase");
+            string deleteQuery = "";
             try
             {
                 switch (name)
                 {
                     case "alumno":
-                        var deleteAlm = _dbContext.Alumno.FirstOrDefault(a => a.Id == id && a.Asignatura == asg);
-                        if(deleteAlm != null)
+                        var borrar = _dbContext.Alumno.FirstOrDefault(a => a.Id == id);
+                        if (!borrar.Asignatura.Equals("")){ return BadRequest(); } 
+                        deleteQuery = "DELETE FROM " + name + " WHERE id = '" + id + "' and asignatura = '" + asg + "'";
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
                         {
-                            _dbContext.Alumno.Remove(deleteAlm);
-                            _dbContext.SaveChanges();
+                            connection.Open();
+
+                            using (SqlCommand command = new SqlCommand(deleteQuery, connection))
+                            {
+                                command.ExecuteNonQuery();
+                               
+                            }
+
+                            connection.Close();
                         }
                         break;
                     case "profesor":
-                        var deletePrf = _dbContext.Profesor.FirstOrDefault(a => a.Id == id);
-                        if (deletePrf != null)
+                        deleteQuery = "DELETE FROM " + name + " WHERE id = '" + id ;
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
                         {
-                            _dbContext.Profesor.Remove(deletePrf);
-                            _dbContext.SaveChanges();
+                            connection.Open();
+
+                            using (SqlCommand command = new SqlCommand(deleteQuery, connection))
+                            {
+                                command.ExecuteNonQuery();
+
+                            }
+
+                            connection.Close();
                         }
                         break;
                     case "asignatura":
-                        var deleteAsg = _dbContext.Asignatura.FirstOrDefault(a => a.Id == id);
-                        if (deleteAsg != null)
+                        deleteQuery = "DELETE FROM " + name + " WHERE id = '" + id;
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
                         {
-                            _dbContext.Asignatura.Remove(deleteAsg);
-                            _dbContext.SaveChanges();
+                            connection.Open();
+
+                            using (SqlCommand command = new SqlCommand(deleteQuery, connection))
+                            {
+                                command.ExecuteNonQuery();
+
+                            }
+
+                            connection.Close();
                         }
                         break;
                     default: return BadRequest();
