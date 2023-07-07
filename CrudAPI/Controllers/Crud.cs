@@ -22,11 +22,11 @@ namespace CrudAPI.Controllers
 
         [HttpPost]
         [Route("api/actualizar/alumno")]
-        public dynamic ActualizarAlumno(Alumno alumno, string id, string asg)
+        public dynamic ActualizarAlumno(Alumno alumno, string id, string asg, string asgOld)
         {
             try
             {
-               var entityAlm = _dbContext.Alumno.FirstOrDefault(a => a.Id == id && a.Asignatura == asg);
+               var entityAlm = _dbContext.Alumno.FirstOrDefault(a => a.Id == id && a.Asignatura == asgOld);
                 
                 if (entityAlm != null)
                 {
@@ -36,7 +36,7 @@ namespace CrudAPI.Controllers
                     entityAlm.Direccion = alumno.Direccion;
                     entityAlm.Telefono = alumno.Telefono;
                     entityAlm.Asignatura = alumno.Asignatura;
-                    entityAlm.Calificacion = alumno.Calificacion;
+                    entityAlm.Calificacion = entityAlm.Asignatura.Equals("0") ? "" : alumno.Calificacion;
 
                     _dbContext.SaveChanges();                       
                 }
@@ -115,8 +115,8 @@ namespace CrudAPI.Controllers
                 switch (name)
                 {
                     case "alumno":
-                        var borrar = _dbContext.Alumno.FirstOrDefault(a => a.Id == id);
-                        if (!borrar.Asignatura.Equals("")){ return BadRequest(); } 
+                        var borrar = _dbContext.Alumno.FirstOrDefault(a => a.Id == id && a.Asignatura == asg);
+                        if (!borrar.Asignatura.Equals("0")){ return BadRequest(); } 
                         deleteQuery = "DELETE FROM " + name + " WHERE id = '" + id + "' and asignatura = '" + asg + "'";
 
                         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -133,7 +133,9 @@ namespace CrudAPI.Controllers
                         }
                         break;
                     case "profesor":
-                        deleteQuery = "DELETE FROM " + name + " WHERE id = '" + id ;
+                        var validar = _dbContext.Profesor.FirstOrDefault(a => a.Id == id);
+                        if (!validar.Asignatura.Equals("0")) { return BadRequest(); }
+                        deleteQuery = "DELETE FROM " + name + " WHERE id = '" + id + "'";
 
                         using (SqlConnection connection = new SqlConnection(connectionString))
                         {
@@ -149,7 +151,7 @@ namespace CrudAPI.Controllers
                         }
                         break;
                     case "asignatura":
-                        deleteQuery = "DELETE FROM " + name + " WHERE id = '" + id;
+                        deleteQuery = "DELETE FROM " + name + " WHERE id = '" + id + "'";
 
                         using (SqlConnection connection = new SqlConnection(connectionString))
                         {
