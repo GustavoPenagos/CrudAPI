@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using CrudAPI.Model;
 using Microsoft.Extensions.Configuration;
 using CrudAPI.Data;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace CrudAPI.Controllers
 {
@@ -31,11 +32,40 @@ namespace CrudAPI.Controllers
                 switch (name)
                 {
                     case "alumno":
-                        return JsonConvert.SerializeObject(_dbContext.Alumno.ToList(), Formatting.Indented);
+                        List<Alumno> alumnos = (from p in _dbContext.Alumno
+                                  select new Alumno
+                                  {
+                                      Id = p.Id,
+                                      Nombre = p.Nombre,
+                                      Apellido = p.Apellido,
+                                      Edad = p.Edad,
+                                      Direccion = p.Direccion,
+                                      Telefono = p.Telefono,
+                                      Asignatura = p.Asignatura,
+                                      Calificacion = p.Calificacion
+                                  }).ToList();
+                        return JsonConvert.SerializeObject(alumnos, Formatting.Indented);
                     case "profesor":
-                        return JsonConvert.SerializeObject(_dbContext.Profesor.ToList(), Formatting.Indented);
+                        List<Profesor> profesor= (from p in _dbContext.Profesor
+                                                select new Profesor
+                                                {
+                                                    Id = p.Id,
+                                                    Nombre = p.Nombre,
+                                                    Apellido = p.Apellido,
+                                                    Edad = p.Edad,
+                                                    Direccion = p.Direccion,
+                                                    Telefono = p.Telefono,
+                                                    Asignatura = p.Asignatura
+                                                }).ToList();
+                        return JsonConvert.SerializeObject(profesor, Formatting.Indented);
                     case "asignatura":
-                        return JsonConvert.SerializeObject(_dbContext.Asignatura.ToList(), Formatting.Indented);
+                        List<Asignatura> asignaturas= (from p in _dbContext.Asignatura
+                                                   select new Asignatura
+                                                   {
+                                                       Id = p.Id,
+                                                       Nombre = p.Nombre,
+                                                   }).ToList();
+                        return JsonConvert.SerializeObject(asignaturas, Formatting.Indented);
                     default: return BadRequest();
                 }
                
