@@ -20,7 +20,7 @@ namespace CrudAPI.Controllers
             _dbContext = dbContext;
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("api/XML")]
         public async Task<dynamic> EnviarXML()
         {
